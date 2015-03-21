@@ -13,7 +13,7 @@ public class Tournament {
     String _tableCaption;
     String _judgePath;
 
-    public Tournament(String userName, String game) {
+    public Tournament(String userName, String game){
         _userName = _userName;
         _game = game;
 
