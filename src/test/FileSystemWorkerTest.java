@@ -12,11 +12,6 @@ import static org.junit.Assert.*;
 public class FileSystemWorkerTest {
 
     @Test
-    public void testGetParam() throws Exception {
-
-    }
-
-    @Test
     public void testGetDelimer() throws Exception {
         Assert.assertEquals("\\", FileSystemWorker.GetDelimer());
     }
