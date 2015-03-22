@@ -1,3 +1,5 @@
+package src;
+
 public class CodeValidationChecker {
 
     String _fileName;

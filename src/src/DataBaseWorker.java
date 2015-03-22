@@ -1,3 +1,5 @@
+package src;
+
 public class DataBaseWorker {
 
     private String _server;
@@ -16,4 +18,5 @@ public class DataBaseWorker {
     public void WriteGameResult(String firstPlayer, String secondPlayer, int result) {
         //Write to DB Here
     }
+
 }

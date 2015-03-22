@@ -10,4 +10,9 @@ public class FileSystemWorker {
         int dotPos = nameAndExt.lastIndexOf(".");
         return dotPos!=-1 ? nameAndExt.substring(dotPos + 1):"";
     }
+
+    public static String GetUsename(Path path){
+
+        return "...";
+    }
 }
