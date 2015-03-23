@@ -1,5 +1,7 @@
 package src;
 
+import java.sql.*;
+
 public class DataBaseWorker {
 
     private String _server;
@@ -15,8 +17,10 @@ public class DataBaseWorker {
         _password = password;
     }
 
-    public void WriteGameResult(String firstPlayer, String secondPlayer, int result) {
+    public void WriteGameResult(String firstPlayer, String firstPlayerLang, String secondPlayer, String secondPlayerLang, int result) {
         //Write to DB Here
+        //Эту часть делает Худяков=)
+        //Худя, жги)
     }
 
 }
