@@ -7,21 +7,25 @@ import java.nio.file.Paths;
 
 public class Game {
 
+    String _game;
     String _player;
+    String _lang;
     DataBaseWorker _dbworker;
     String _judge;
 
 
-    public Game(String player, DataBaseWorker dbworker, String judge){
+    public Game(String game, String player, String lang, DataBaseWorker dbworker, String judge){
+        _game = game;
         _player = player;
-        //_dbworker = dbworker;
+        _lang = lang;
+        _dbworker = dbworker;
         _judge = judge;
     }
 
     public void OrganizeGame()
     {
         try {
-            Files.walk(Paths.get("d:\\AICupEnvironment\\Games\\Cross\\")).forEach(filePath -> {
+            Files.walk(Paths.get(FileSystemWorker.GetRoot() + _game)).forEach(filePath -> {
                 Do(filePath);
             });
         } catch (IOException e) {
@@ -45,17 +49,20 @@ public class Game {
         if(!filePath.endsWith("runme.sh"))
             return;
 
-        String commands[] = {_judge, "user1, user2"};
+        String firstPlayer = _player;
+        String firstPlayerLang = _lang;
+
+        String secondPlayer = FileSystemWorker.GetUsername(filePath);
+        String secondPlayerLang = FileSystemWorker.GetLang(filePath);
+
+        String commands[] = {_judge, firstPlayer + " " + firstPlayerLang + " " + secondPlayer + " " + secondPlayerLang};
         Runtime rt = Runtime.getRuntime();
 
-        int gameResult = 0;
+        int gameResult;
         try {
             Process proc = rt.exec(commands);
             gameResult = proc.exitValue();
-
-            _dbworker.WriteGameResult("user1", "user2", gameResult);
-
-
+            _dbworker.WriteGameResult(firstPlayer, firstPlayerLang, secondPlayer, secondPlayerLang, gameResult);
         } catch (IOException e) {
             e.printStackTrace();
         }
