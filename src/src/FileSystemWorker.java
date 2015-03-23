@@ -8,8 +8,13 @@ import java.nio.file.Path;
 
 public class FileSystemWorker {
 
-    public static String GetParam(String keyName) throws IOException {
-        Wini ini = new Wini(new File("tournamentset.ini"));
+    public static String GetParam(String keyName) {
+        Wini ini = null;
+        try {
+            ini = new Wini(new File("tournamentset.ini"));
+        } catch (IOException e) {
+            return "Error";
+        }
 
         return ini.get("General", keyName);
     }
