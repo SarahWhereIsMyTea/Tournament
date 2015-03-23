@@ -72,7 +72,7 @@ public class Tournament {
     }
 
     private boolean CheckCode() {
-        CodeValidationChecker checker = new CodeValidationChecker(_fileName);
+        CodeValidationChecker checker = new CodeValidationChecker(_fileName, _lang);
         if(!checker.IsCodeCorrect())
             return false;
 
