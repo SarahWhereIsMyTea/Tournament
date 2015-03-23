@@ -5,27 +5,14 @@ public class CodeValidationChecker {
     String _fileName;
     String _lang;
 
-    public CodeValidationChecker(String fileName) {
+    public CodeValidationChecker(String fileName, String lang) {
         _fileName = fileName;
-        _lang = DetermineLang(fileName);
+        _lang = lang;
     }
 
-    public static String DetermineLang(String fileName){
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
-
-        if(extension == "cpp")
-            return "Cpp";
-        if(extension == "cs")
-            return "CSharp";
-        if(extension == "rb")
-            return "Ruby";
-
-        return "unknown";
-
-    }
-
-    public boolean IsCodeCorrect()
-    {
+    public boolean IsCodeCorrect() {
+        //Булдаков пишет Make file
         return true;
     }
+
 }
