@@ -25,7 +25,7 @@ public class Game {
     public void OrganizeGame()
     {
         try {
-            Files.walk(Paths.get(FileSystemWorker.GetRoot() + _game)).forEach(filePath -> {
+            Files.walk(Paths.get(GlobalData.getInstance().Root + _game)).forEach(filePath -> {
                 Do(filePath);
             });
         } catch (IOException e) {
@@ -38,8 +38,8 @@ public class Game {
      * Если есть, то вызываем программу Judge
      * Ловим int ответ, расшифровка пока такая:
      * 0 - ничья (а что, очень даже может быть)
-     * 1 - выиграл первый игрок
-     * 2 - выиграл второй игрок
+     * -1 - выиграл первый игрок
+     * 1 - выиграл второй игрок
      * Может случиться так, что игра не пройдет (кто-то из игроков не уложится во время или еще что-то)
      * тогда 2 варианта - либо Judge сам решает, что ставит техническое поражение кому-то (то есть другой побеждает)
      * либо определяет эту ситуацию и вернет другое значение
@@ -52,8 +52,8 @@ public class Game {
         String firstPlayer = _player;
         String firstPlayerLang = _lang;
 
-        String secondPlayer = FileSystemWorker.GetUsername(filePath);
-        String secondPlayerLang = FileSystemWorker.GetLang(filePath);
+        String secondPlayer = GlobalData.getInstance().GetUsername(filePath);
+        String secondPlayerLang = GlobalData.getInstance().GetLang(filePath);
 
         String commands[] = {_judge, firstPlayer + " " + firstPlayerLang + " " + secondPlayer + " " + secondPlayerLang};
         Runtime rt = Runtime.getRuntime();
@@ -62,7 +62,7 @@ public class Game {
         try {
             Process proc = rt.exec(commands);
             gameResult = proc.exitValue();
-            _dbworker.WriteGameResult(firstPlayer, firstPlayerLang, secondPlayer, secondPlayerLang, gameResult);
+            _dbworker.InsertInTable(firstPlayer, firstPlayerLang, secondPlayer, secondPlayerLang, gameResult);
         } catch (IOException e) {
             e.printStackTrace();
         }

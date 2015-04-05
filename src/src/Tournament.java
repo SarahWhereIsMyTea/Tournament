@@ -54,7 +54,7 @@ public class Tournament {
 
     private int MakeGame() {
         InitDataBaseWorker();
-        String judge = FileSystemWorker.GetParam("Judge");
+        String judge = GlobalData.getInstance().Judge;
         Game game = new Game(_game, _userName, _lang, _dataBaseWorker, judge);
 
         game.OrganizeGame();
@@ -63,37 +63,19 @@ public class Tournament {
     }
 
     private void InitDataBaseWorker() {
-        String server = FileSystemWorker.GetParam("DBServer");
-        String table = FileSystemWorker.GetParam("DBTable");
-        String login = FileSystemWorker.GetParam("DBLogin");
-        String password = FileSystemWorker.GetParam("DBPassword");
+        String server = GlobalData.getInstance().DBServer;
+        String table = GlobalData.getInstance().DBTable;
+        String login = GlobalData.getInstance().DBLogin;
+        String password = GlobalData.getInstance().DBPassword;
 
         _dataBaseWorker = new DataBaseWorker(server, table, login, password);
     }
 
     private boolean CheckCode() {
-        CodeValidationChecker checker = new CodeValidationChecker(_fileName, _lang);
-        if(!checker.IsCodeCorrect())
+        CodeMaker codeMaker = new CodeMaker(_fileName, _lang);
+        if(!codeMaker.Make())
             return false;
 
-        MakeRunMe();
-
         return true;
-    }
-
-    private void MakeRunMe() { // чет пока не очень понятно, что и как здесь будет(((
-        // тут надо сделать вот этот sh
-
-        Path target = Paths.get(FileSystemWorker.GetParam("FullPath").replaceAll("%lang%", _lang).
-                                                                      replaceAll("%user%", _userName).
-                                                                      replaceAll("%game%", _game)
-                                                                      + "RunMe.sh");
-        Path source = Paths.get(Paths.get(_fileName).getParent() + "RunMe.sh");
-
-        try {
-            Files.move(source, target);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -4,42 +4,84 @@ import java.sql.*;
 
 public class DataBaseWorker {
 
-    private java.lang.String _server;
-    private java.lang.String _table;
-    private java.lang.String _user;
-    private java.lang.String _password;
+        private String _dbName;
+        private String _tableName;
+        private String _password;
+        private String _userName;
+        private Connection _con;
+        private Statement _statement;
 
-    public DataBaseWorker(String server, String table, String user, String password) {
+        DataBaseWorker(String dbName, String userName, String tableName, String password)
+        {
+            _tableName = tableName;
+            _password = password;
+            _userName = userName;
+            _dbName = dbName;
 
-        _server = server;
-        _table = table;
-        _user = user;
-        _password = password;
-    }
+            try {
+                try {
+                    Class.forName("com.mysql.jdbc.Driver").newInstance();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                String url = "jdbc:mysql://localhost/" + _dbName;
+                String name = userName;
+                String accessPassword = password;
+                try {
+                    _con = DriverManager.getConnection(url, name, accessPassword);
+                    _statement = _con.createStatement();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
-    private  Connection getDBConnection(java.lang.String DB_DRIVER) {
-        Connection dbConnection = null;
-        try {
-            Class.forName(DB_DRIVER);
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
         }
-        try {
 
-            dbConnection = DriverManager.getConnection(_table, _user,_password);
+        private int GetIntDataFromTable(String playerName, String data) throws SQLException {
 
-        } catch (SQLException e) {
+            String select = "select "+ data + " from " + _tableName + " where player = '" + playerName + "'";
 
-            System.out.println(e.getMessage());
-            return dbConnection;
+            ResultSet rs = _statement.executeQuery(select);
+
+            rs.next();
+
+            int count = rs.getInt(data);
+
+            return count;
         }
 
-        return dbConnection;
-    }
+        public void InsertInTable(String firstPlayer, String secondPlayer, String language, String winPlayerName) throws SQLException {
 
-    public void WriteGameResult(String firstPlayer, String firstPlayerLang, String secondPlayer, String secondPlayerLang, int result) {
-        //Write to DB Here
-        //Эту часть делает Худяков=)
+            int gamesCount = GetIntDataFromTable(winPlayerName, "games");
+
+            String strCount = Integer.toString(gamesCount + 1);
+
+            _statement.execute("update " + _tableName + " set games = " + strCount + " where player = '" + winPlayerName + "'");
+
+            int winsCount = GetIntDataFromTable(winPlayerName, "wins");
+
+            String strWinsCount = Integer.toString(winsCount + 1);
+
+            _statement.execute("update " + _tableName + " set wins = " + strWinsCount + " where player = '" + winPlayerName + "'");
+
+            if( firstPlayer != winPlayerName) {
+                gamesCount = GetIntDataFromTable(firstPlayer, "games");
+                strCount = Integer.toString(gamesCount + 1);
+                _statement.execute("update " + _tableName + " set games = " + strCount + " where player = '" + firstPlayer + "'");
+            }
+            else {
+                gamesCount = GetIntDataFromTable(secondPlayer, "games");
+                strCount = Integer.toString(gamesCount + 1);
+                _statement.execute("update " + _tableName + " set games = " + strCount + " where player = '" + secondPlayer + "'");
+            }
+        }
+
+        protected void finalize() throws Throwable {
+        _con.close();
     }
 
 }
