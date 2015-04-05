@@ -2,21 +2,42 @@ package src;
 
 public class DataBaseWorker {
 
-    private String _server;
-    private String _table;
-    private String _user;
+
+    private String _dbName;
+    private String _tableName;
     private String _password;
+    private String _userName;
+    private Connection _con;
+    private Statement _statement;
 
-    public DataBaseWorker(String server, String table, String user, String password) {
-
-        _server = server;
-        _table = table;
-        _user = user;
+    DbConnection(String dbName,String userName,String tableName, String password)
+    {
+        _tableName = tableName;
         _password = password;
-    }
+        _userName = userName;
+        _dbName = dbName;
 
-    public void WriteGameResult(String firstPlayer, String secondPlayer, int result) {
-        //Write to DB Here
+        try {
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            String url = "jdbc:mysql://localhost/" + _dbName;
+            String name = userName;
+            String accessPassword = password;
+            try {
+                _con = DriverManager.getConnection(url, name, accessPassword);
+                _statement = _con.createStatement();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
