@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 public class Game {
 
     String _game;
     String _player;
     String _lang;
+
     DataBaseWorker _dbworker;
     String _judge;
 
@@ -25,8 +27,12 @@ public class Game {
     public void OrganizeGame()
     {
         try {
-            Files.walk(Paths.get(GlobalData.getInstance().Root + _game)).forEach(filePath -> {
-                Do(filePath);
+            Files.walk(Paths.get(GlobalData.getInstance().Root + "/Games/" + _game + GlobalData.getInstance().Delimer)).forEach(filePath -> {
+                try {
+                    Do(filePath);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,26 +51,28 @@ public class Game {
      * либо определяет эту ситуацию и вернет другое значение
      * это позволит записать в БД соответствующую информацию
     */
-    private void Do(Path filePath) {
-        if(!filePath.endsWith("runme.sh"))
+    private void Do(Path filePath) throws SQLException {
+        if(!filePath.endsWith("runme"))
             return;
 
-        String firstPlayer = _player;
-        String firstPlayerLang = _lang;
+        String firstPlayer = GlobalData.getInstance().UserPath.replace("%lang%", _lang).replace("%game%", _game).replace("%user%", _player) + "runme";
 
-        String secondPlayer = GlobalData.getInstance().GetUsername(filePath);
-        String secondPlayerLang = GlobalData.getInstance().GetLang(filePath);
+        String secondPlayer = filePath.toString();
 
-        String commands[] = {_judge, firstPlayer + " " + firstPlayerLang + " " + secondPlayer + " " + secondPlayerLang};
+        if(firstPlayer.equals(secondPlayer))
+            return;
+
+        String commands[] = {_judge, firstPlayer + " " + secondPlayer};
         Runtime rt = Runtime.getRuntime();
 
-        int gameResult;
+        int gameResult = 1;
         try {
-            Process proc = rt.exec(commands);
-            gameResult = proc.exitValue();
-            _dbworker.InsertInTable(firstPlayer, firstPlayerLang, secondPlayer, secondPlayerLang, gameResult);
-        } catch (IOException e) {
+            //Process proc = rt.exec(commands);
+            //gameResult = proc.exitValue();
+            _dbworker.InsertInTable(GlobalData.GetUsername(Paths.get(firstPlayer)), GlobalData.GetLang(Paths.get(firstPlayer)), GlobalData.GetUsername(Paths.get(secondPlayer)), GlobalData.GetLang(Paths.get(secondPlayer)), gameResult);
+        } catch (Exception e) {        // change to IOException
             e.printStackTrace();
         }
     }
 }
+ 
