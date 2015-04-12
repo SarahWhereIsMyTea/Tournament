@@ -1,18 +1,17 @@
 package src;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.ini4j.Wini;
 
 public class Tournament {
     String _userName;
     String _game;
-    String _fileName;
+    String _sourceFile;
+    String _destFile;
     String _lang;
 
     DataBaseWorker _dataBaseWorker;
@@ -20,19 +19,19 @@ public class Tournament {
     public Tournament(String userName, String game, String fileName){
         _userName = userName;
         _game = game;
-        _fileName = fileName;
+        _sourceFile = fileName;
 
-        _lang = DetermineLang(_fileName);
+        _lang = DetermineLang(_sourceFile);
     }
 
     public static String DetermineLang(String fileName){
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 
-        if(extension == "cpp")
+        if(extension.contains("cpp"))
             return "Cpp";
-        if(extension == "cs")
+        if(extension.contains("cs"))
             return "CSharp";
-        if(extension == "rb")
+        if(extension.contains("rb"))
             return "Ruby";
 
         return "unknown";
@@ -45,18 +44,30 @@ public class Tournament {
     * --может что-то еще придется добавить
     * */
 
-    public int Game() {
+    public int Game() throws IOException {
+        CopyFiles();
         if(!CheckCode())
             return 1;
 
         return MakeGame();
     }
 
+    private void CopyFiles() throws IOException {
+        _destFile = GlobalData.getInstance().UserPath.replaceAll("%lang%", _lang).
+                                                      replaceAll("%user%", _userName).
+                                                      replaceAll("%game%", _game);
+
+        FileUtils.cleanDirectory(new File(_destFile));
+
+        Files.copy(Paths.get(_sourceFile), Paths.get(_destFile + GlobalData.GetFileName(_sourceFile)));
+
+        FileUtils.copyDirectory(new File(GlobalData.getInstance().SDKPath.replace("%lang%", _lang)), new File (_destFile));
+    }
+
     private int MakeGame() {
         InitDataBaseWorker();
         String judge = GlobalData.getInstance().Judge;
         Game game = new Game(_game, _userName, _lang, _dataBaseWorker, judge);
-
         game.OrganizeGame();
 
         return 0;
@@ -72,7 +83,7 @@ public class Tournament {
     }
 
     private boolean CheckCode() {
-        CodeMaker codeMaker = new CodeMaker(_fileName, _lang);
+        CodeMaker codeMaker = new CodeMaker(_destFile, _lang);
         if(!codeMaker.Make())
             return false;
 
