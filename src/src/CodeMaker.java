@@ -1,5 +1,9 @@
 package src;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+
 public class CodeMaker {
 
     String _fileName;
@@ -11,11 +15,11 @@ public class CodeMaker {
     }
 
     public boolean Make() {
-        if(_lang == "Cpp")
+        if(_lang.equals("Cpp"))
             MakeCpp();
-        if(_lang == "CSharp")
+        if(_lang.equals("CSharp"))
             MakeCSharp();
-        if(_lang == "Rake")
+        if(_lang.equals("Ruby"))
             MakeRake();
         return true;
     }
@@ -29,7 +33,14 @@ public class CodeMaker {
     }
 
     private void MakeCpp() {
+        String make = "make -f makeplus";
+        Runtime rt = Runtime.getRuntime();
 
+        try {
+            rt.exec(make, null, new File(_fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
