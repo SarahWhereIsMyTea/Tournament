@@ -5,6 +5,7 @@ import org.ini4j.Wini;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GlobalData {
 
@@ -31,13 +32,13 @@ public class GlobalData {
 
     public GlobalData(){
         Root = GetParam("Root");
-        SDKPath = GetParam("SDKPath").replaceAll("%Root%", Root);
-        UserPath = GetParam("UserPath").replaceAll("%Root%", Root);
+        SDKPath = GetParam("SDKPath").replace("%Root%", Root);
+        UserPath = GetParam("UserPath").replace("%Root%", Root);
         DBServer = GetParam("DBServer");
         DBTable = GetParam("DBTable");
         DBLogin = GetParam("DBLogin");
         DBPassword = GetParam("DBPassword");
-        Judge = GetParam("Judge");
+        Judge = GetParam("Judge").replace("%Root%", Root);;
         Delimer = GetDelimer();
     }
 
@@ -70,4 +71,6 @@ public class GlobalData {
     public static String GetUsername(Path path) {
         return path.getName(path.getNameCount() - 3).toString();
     }
+
+    public static String GetFileName(String path) { return Paths.get(path).getFileName().toString();}
 }
