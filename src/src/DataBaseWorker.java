@@ -43,12 +43,11 @@ public class DataBaseWorker {
 
         public void InsertInTable(String firstPlayer, String firstPlayerLanguage, String secondPlayer, String secondPlayerLanguage, int gameResult) throws SQLException {
 
-            String sql = "DELETE FROM `" + _tableName + "` WHERE player1 = '" + firstPlayer + "' AND lang1 = '" + firstPlayerLanguage + "' AND player2 = '" + secondPlayer + "' AND lang2 = '" + secondPlayerLanguage + "'";
-            _statement.execute("DELETE FROM `" + _tableName + "` WHERE player1 = '" + firstPlayer + "' AND lang1 = '" + firstPlayerLanguage + "' AND player2 = '" + secondPlayer + "' AND lang2 = '" + secondPlayerLanguage + "'");
-            _statement.execute("DELETE FROM `" + _tableName + "` WHERE player1 = '" + secondPlayer + "' AND lang1 = '" + secondPlayerLanguage + "' AND player2 = '" + firstPlayer + "' AND lang2 = '" + firstPlayerLanguage + "'");
+            _statement.execute("DELETE FROM `" + _tableName + "` WHERE Player = '" + firstPlayer + "' AND PlayerLang = '" + firstPlayerLanguage + "' AND Opponent = '" + secondPlayer + "' AND OpponentLang = '" + secondPlayerLanguage + "'");
+            _statement.execute("DELETE FROM `" + _tableName + "` WHERE Player = '" + secondPlayer + "' AND PlayerLang = '" + secondPlayerLanguage + "' AND Opponent = '" + firstPlayer + "' AND OpponentLang = '" + firstPlayerLanguage + "'");
 
-            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + secondPlayer + "', '" + secondPlayerLanguage + "', '" + firstPlayer + "', '" + firstPlayerLanguage + "', " + gameResult + ")");
-            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + firstPlayer + "', '" + firstPlayerLanguage + "', '" + secondPlayer + "', '" + secondPlayerLanguage + "', " + gameResult * (-1) + ")");
+            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + secondPlayer + "', '" + secondPlayerLanguage + "', '" + firstPlayer + "', '" + firstPlayerLanguage + "', " + gameResult + ", 'ver1'" + ")");
+            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + firstPlayer + "', '" + firstPlayerLanguage + "', '" + secondPlayer + "', '" + secondPlayerLanguage + "', " + gameResult * (-1) + ", 'ver1'" + ")");
         }
 
         protected void finalize() throws Throwable {
