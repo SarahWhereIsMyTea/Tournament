@@ -4,6 +4,7 @@ import java.sql.*;
 
 public class DataBaseWorker implements IDataBaseWorker {
 
+        private String _server;
         private String _dbName;
         private String _tableName;
         private String _password;
@@ -11,8 +12,9 @@ public class DataBaseWorker implements IDataBaseWorker {
         private Connection _con;
         private Statement _statement;
 
-        DataBaseWorker(String dbName, String tableName, String userName, String password)
+        DataBaseWorker(String server, String dbName, String tableName, String userName, String password)
         {
+            _server = server;
             _tableName = tableName;
             _password = password;
             _userName = userName;
@@ -26,7 +28,7 @@ public class DataBaseWorker implements IDataBaseWorker {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-                String url = "jdbc:mysql://localhost/" + _dbName;
+                String url = "jdbc:mysql://" + _server + "/" + _dbName;
                 String name = userName;
                 String accessPassword = password;
                 try {
