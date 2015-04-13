@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
 public class Tournament {
@@ -14,14 +15,16 @@ public class Tournament {
     String _destFile;
     String _lang;
 
-    DataBaseWorker _dataBaseWorker;
+    IDataBaseWorker _dataBaseWorker;
 
     public Tournament(String userName, String game, String fileName){
         _userName = userName;
         _game = game;
         _sourceFile = fileName;
-
         _lang = DetermineLang(_sourceFile);
+
+        if(_lang.equals("unknown"))
+            throw new InvalidPathException(_sourceFile, "Invalid file extension. Could not determine program language");
     }
 
     public static String DetermineLang(String fileName){
@@ -75,11 +78,11 @@ public class Tournament {
 
     private void InitDataBaseWorker() {
         String server = GlobalData.getInstance().DBServer;
+        String name = GlobalData.getInstance().DBName;
         String table = GlobalData.getInstance().DBTable;
         String login = GlobalData.getInstance().DBLogin;
         String password = GlobalData.getInstance().DBPassword;
-
-        _dataBaseWorker = new DataBaseWorker(server, table, login, password);
+        _dataBaseWorker = new DataBaseWorker(server, name, table, login, password);
     }
 
     private boolean CheckCode() {
