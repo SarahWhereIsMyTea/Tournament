@@ -26,6 +26,7 @@ public class GlobalData {
     String SDKPath;
     int SDKVer;
     String UserPath;
+    String DBServer;
     String DBName;
     String DBTable;
     String DBLogin;
@@ -37,6 +38,7 @@ public class GlobalData {
         SDKPath = GetParam("SDKPath").replace("%Root%", Root);
         SDKVer = DetermineSDKVer();
         UserPath = GetParam("UserPath").replace("%Root%", Root);
+        DBServer = GetParam("DBServer");
         DBName = GetParam("DBName");
         DBTable = GetParam("DBTable");
         DBLogin = GetParam("DBLogin");
