@@ -12,11 +12,11 @@ public class Game {
     String _player;
     String _lang;
 
-    DataBaseWorker _dbworker;
+    IDataBaseWorker _dbworker;
     String _judge;
 
 
-    public Game(String game, String player, String lang, DataBaseWorker dbworker, String judge){
+    public Game(String game, String player, String lang, IDataBaseWorker dbworker, String judge){
         _game = game;
         _player = player;
         _lang = lang;
@@ -27,7 +27,7 @@ public class Game {
     public void OrganizeGame()
     {
         try {
-            Files.walk(Paths.get(GlobalData.getInstance().Root + "/Games/" + _game + GlobalData.getInstance().Delimer)).forEach(filePath -> {
+            Files.walk(Paths.get(GlobalData.getInstance().Root + "/Games/" + _game + "/")).forEach(filePath -> {
                 try {
                     Do(filePath);
                 } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class Game {
      * либо определяет эту ситуацию и вернет другое значение
      * это позволит записать в БД соответствующую информацию
     */
-    private void Do(Path filePath) throws SQLException {
+    public void Do(Path filePath) throws SQLException {
         if(!filePath.endsWith("runme"))
             return;
 
@@ -69,7 +69,7 @@ public class Game {
         try {
             //Process proc = rt.exec(commands);
             //gameResult = proc.exitValue();
-            _dbworker.InsertInTable(GlobalData.GetUsername(Paths.get(firstPlayer)), GlobalData.GetLang(Paths.get(firstPlayer)), GlobalData.GetUsername(Paths.get(secondPlayer)), GlobalData.GetLang(Paths.get(secondPlayer)), gameResult);
+            _dbworker.InsertInTable(GlobalData.GetUsername(firstPlayer), GlobalData.GetLang(firstPlayer), GlobalData.GetUsername(secondPlayer), GlobalData.GetLang(secondPlayer), gameResult, GlobalData.getInstance().SDKVer);
         } catch (Exception e) {        // change to IOException
             e.printStackTrace();
         }

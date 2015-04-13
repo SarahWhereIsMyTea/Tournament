@@ -3,9 +3,11 @@ package src;
 import org.ini4j.Wini;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class GlobalData {
 
@@ -22,24 +24,37 @@ public class GlobalData {
 
     String Root;
     String SDKPath;
+    int SDKVer;
     String UserPath;
     String DBServer;
+    String DBName;
     String DBTable;
     String DBLogin;
     String DBPassword;
     String Judge;
-    String Delimer;
 
     public GlobalData(){
         Root = GetParam("Root");
         SDKPath = GetParam("SDKPath").replace("%Root%", Root);
+        SDKVer = DetermineSDKVer();
         UserPath = GetParam("UserPath").replace("%Root%", Root);
         DBServer = GetParam("DBServer");
+        DBName = GetParam("DBName");
         DBTable = GetParam("DBTable");
         DBLogin = GetParam("DBLogin");
         DBPassword = GetParam("DBPassword");
         Judge = GetParam("Judge").replace("%Root%", Root);;
-        Delimer = GetDelimer();
+    }
+
+    private int DetermineSDKVer() {
+        try {
+            FileInputStream fis = new FileInputStream(SDKPath + "../version");
+            Scanner sc = new Scanner(fis);
+            return sc.nextInt();
+
+        } catch (Exception ex) {
+            return 0;
+        }
     }
 
     private String GetParam(String keyName) {
@@ -53,24 +68,17 @@ public class GlobalData {
         return ini.get("General", keyName);
     }
 
-    private String GetDelimer(){
-        if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) //если windows
-            return "\\";
-
-        if(System.getProperty("os.name").toLowerCase().indexOf("nux") >= 0 ||
-                System.getProperty("os.name").toLowerCase().indexOf("nix") >= 0) //если linux / unix
-            return "/";
-
-        return "/";
-    }
-
-    public static String GetLang(Path path){
+    public static String GetLang(String fileName){
+        Path path = Paths.get(fileName);
         return path.getName(path.getNameCount() - 2).toString();
     }
 
-    public static String GetUsername(Path path) {
-        return path.getName(path.getNameCount() - 3).toString();
+    public static String GetUsername(String fileName) {
+        Path paths = Paths.get(fileName);
+        return paths.getName(paths.getNameCount() - 3).toString();
     }
 
-    public static String GetFileName(String path) { return Paths.get(path).getFileName().toString();}
+    public static String GetFileName(String path) {
+        return Paths.get(path).getFileName().toString();
+    }
 }

@@ -24,6 +24,13 @@ public class CodeMaker {
         return true;
     }
 
+    public boolean CheckFileCreation()
+    {
+        File file = new File(_fileName);
+
+        return file.exists();
+    }
+
     private void MakeRake() {
 
     }

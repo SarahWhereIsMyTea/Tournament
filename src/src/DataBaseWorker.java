@@ -2,7 +2,7 @@ package src;
 
 import java.sql.*;
 
-public class DataBaseWorker {
+public class DataBaseWorker implements IDataBaseWorker {
 
         private String _dbName;
         private String _tableName;
@@ -41,13 +41,14 @@ public class DataBaseWorker {
 
         }
 
-        public void InsertInTable(String firstPlayer, String firstPlayerLanguage, String secondPlayer, String secondPlayerLanguage, int gameResult) throws SQLException {
+        public boolean InsertInTable(String firstPlayer, String firstPlayerLanguage, String secondPlayer, String secondPlayerLanguage, int gameResult, int SDKVer) throws SQLException {
 
-            _statement.execute("DELETE FROM `" + _tableName + "` WHERE Player = '" + firstPlayer + "' AND PlayerLang = '" + firstPlayerLanguage + "' AND Opponent = '" + secondPlayer + "' AND OpponentLang = '" + secondPlayerLanguage + "'");
-            _statement.execute("DELETE FROM `" + _tableName + "` WHERE Player = '" + secondPlayer + "' AND PlayerLang = '" + secondPlayerLanguage + "' AND Opponent = '" + firstPlayer + "' AND OpponentLang = '" + firstPlayerLanguage + "'");
+            _statement.execute("DELETE FROM `" + _tableName + "` WHERE Player = '" + firstPlayer + "' AND PlayerLang = '" + firstPlayerLanguage + "' AND Opponent = '" + secondPlayer + "' AND OpponentLang = '" + secondPlayerLanguage + "' AND SDKVer = " + SDKVer);
+            _statement.execute("DELETE FROM `" + _tableName + "` WHERE Player = '" + secondPlayer + "' AND PlayerLang = '" + secondPlayerLanguage + "' AND Opponent = '" + firstPlayer + "' AND OpponentLang = '" + firstPlayerLanguage + "' AND SDKVer = " + SDKVer);
 
-            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + secondPlayer + "', '" + secondPlayerLanguage + "', '" + firstPlayer + "', '" + firstPlayerLanguage + "', " + gameResult + ", 'ver1'" + ")");
-            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + firstPlayer + "', '" + firstPlayerLanguage + "', '" + secondPlayer + "', '" + secondPlayerLanguage + "', " + gameResult * (-1) + ", 'ver1'" + ")");
+            _statement.execute("INSERT INTO `" + _tableName + "` VALUES ('" + firstPlayer + "', '" + firstPlayerLanguage + "', '" + secondPlayer + "', '" + secondPlayerLanguage + "', " + gameResult * (-1) + "," + SDKVer + ")");
+
+            return true;
         }
 
         protected void finalize() throws Throwable {
