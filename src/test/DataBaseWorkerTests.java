@@ -1,7 +1,10 @@
 import org.junit.Assert;
 import org.junit.Test;
 import src.IDataBaseWorker;
+import src.JsonWorker;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.mockito.Mockito.*;
@@ -12,14 +15,14 @@ import static org.mockito.Mockito.*;
 public class DataBaseWorkerTests {
 
     @Test
-    public void WriteGameResultCallTest() throws SQLException {
+    public void WriteGameResultCallTest() throws SQLException, IOException {
 
-        IDataBaseWorker mockedWorker = mock(IDataBaseWorker.class);
+        JsonWorker worker = new JsonWorker("test.JSON");
 
-        mockedWorker.InsertInTable("A", "php", "B", "Cpp", 1, 2);
-
-        boolean res = verify(mockedWorker).InsertInTable("A", "php", "B", "Cpp", 1, 2);
-
-        Assert.assertTrue(res);
+        try {
+            worker.AddGameResult("g", "f", "l", "sn", "sl", 1, 834);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
