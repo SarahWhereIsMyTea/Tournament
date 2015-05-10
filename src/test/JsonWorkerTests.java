@@ -7,30 +7,42 @@ import java.io.*;
 public class JsonWorkerTests {
 
     @Test
-    public void FirstTests() throws IOException {
+    public void FileCreationTest() throws IOException {
 
+        JsonWorker worker = new JsonWorker();
 
-        JsonWorker worker = new JsonWorker("C:\\Users\\user\\Desktop\\test.JSON");
+        worker.AddGameResult("g", "a", "al", "b", "bl", 1, 534);
 
-        File f = new File("C:\\Users\\user\\Desktop\\test.JSON");
+        File f = new File("aVSbresult.txt");
 
-        FileReader reader = new FileReader("C:\\Users\\user\\Desktop\\test.JSON");
+        Assert.assertTrue(f.exists());
 
-        String buf;
+        f.delete();
+    }
+
+    @Test
+    public void FileContentTest() throws IOException {
+
+        JsonWorker worker = new JsonWorker();
+
+        worker.AddGameResult("g", "a", "al", "b", "bl", 1, 534);
+
+        File f = new File("aVSbresult.txt");
+
+        FileReader reader = new FileReader(f);
 
         BufferedReader breader = new BufferedReader(reader);
 
-        String strres = breader.readLine();
+        String res = "";
 
-        strres = strres + breader.readLine();
-        strres = strres + breader.readLine();
-        strres = strres + breader.readLine();
+        res = res + breader.readLine();
+        res = res + breader.readLine();
+        res = res + breader.readLine();
 
-        String res = "{" +
-                "{\"game\":\"g\",\"secondPlayerLanguage\":\"sl\",\"firstPlayer\":\"f\",\"firstPlayerLanguage\":\"l\",\"sdkVer\":834,\"secondPlayer\":\"hui\",\"gameResult\":1}" +
-                "{\"game\":\"g\",\"secondPlayerLanguage\":\"sl\",\"firstPlayer\":\"f\",\"firstPlayerLanguage\":\"l\",\"sdkVer\":834,\"secondPlayer\":\"hui\",\"gameResult\":1}" +
-                "}";
+        String exp = "{{\"game\":\"g\",\"secondPlayerLanguage\":\"bl\",\"firstPlayer\":\"a\",\"firstPlayerLanguage\":\"al\",\"sdkVer\":534,\"secondPlayer\":\"b\",\"gameResult\":1}{";
 
-        Assert.assertSame(strres, res);
+        Assert.assertArrayEquals(res.toCharArray(), exp.toCharArray());
+
+        f.delete();
     }
 }
