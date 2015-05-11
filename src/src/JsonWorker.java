@@ -8,23 +8,26 @@ import java.io.*;
  */
 public class JsonWorker implements IJsonWorker {
 
+    private String _fileName;
+
+    public JsonWorker(String fileName)
+    {
+        _fileName = fileName;
+    }
+
     public void AddGameResult(String game, String firstPlayer, String firstPlayerLanguage, String secondPlayer, String secondPlayerLanguage, int gameResult, int sdkVer) throws IOException {
 
-        String fileName = firstPlayer + "VS" + secondPlayer + "result.txt";
-
-        File f = new File(fileName);
-
-        f.createNewFile();
+        File f = new File(_fileName);
 
         JSONObject res = makeResultNote(game, firstPlayer, firstPlayerLanguage, secondPlayer, secondPlayerLanguage, gameResult, sdkVer);
 
         String insertedInFile = res.toString();
 
-        RandomAccessFile file = new RandomAccessFile(fileName, "rw");
+        RandomAccessFile file = new RandomAccessFile(_fileName, "rw");
 
-        file.skipBytes((int)file.length() - 1);
+        file.skipBytes((int)file.length() - 1); //skip to the end of the file
 
-        file.writeBytes("{\r\n" + insertedInFile + "\r\n" + "}");
+        file.writeBytes(insertedInFile + "\r\n" + "}");
 
         file.close();
 
