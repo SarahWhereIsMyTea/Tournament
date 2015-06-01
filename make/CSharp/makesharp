@@ -1,0 +1,6 @@
+TARGET=$(shell basename `pwd`)
+SOURCES=$(wildcard *.cs)
+OBJECTS=$(SOURCES:%.cs=%.o)
+
+all:
+	mcs $(SOURCES) -out:runme.exe

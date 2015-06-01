@@ -69,10 +69,9 @@ public class Game {
         try {
             //Process proc = rt.exec(commands);
             //gameResult = proc.exitValue();
-            _dbworker.InsertInTable(GlobalData.GetUsername(firstPlayer), GlobalData.GetLang(firstPlayer), GlobalData.GetUsername(secondPlayer), GlobalData.GetLang(secondPlayer), gameResult, GlobalData.getInstance().SDKVer);
+           // _dbworker.AddGameResult(GlobalData.GetUsername(firstPlayer), GlobalData.GetLang(firstPlayer), GlobalData.GetUsername(secondPlayer), GlobalData.GetLang(secondPlayer), gameResult, GlobalData.getInstance().SDKVer);
         } catch (Exception e) {        // change to IOException
             e.printStackTrace();
         }
     }
 }
- 

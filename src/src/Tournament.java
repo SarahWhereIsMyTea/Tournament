@@ -15,7 +15,7 @@ public class Tournament {
     String _destFile;
     String _lang;
 
-    DataBaseWorker _dataBaseWorker;
+    IDataBaseWorker _dataBaseWorker;
 
     public Tournament(String userName, String game, String fileName){
         _userName = userName;
@@ -67,7 +67,7 @@ public class Tournament {
         FileUtils.copyDirectory(new File(GlobalData.getInstance().SDKPath.replace("%lang%", _lang)), new File (_destFile));
     }
 
-    private int MakeGame() {
+    private int MakeGame() throws IOException {
         InitDataBaseWorker();
         String judge = GlobalData.getInstance().Judge;
         Game game = new Game(_game, _userName, _lang, _dataBaseWorker, judge);
@@ -76,12 +76,12 @@ public class Tournament {
         return 0;
     }
 
-    private void InitDataBaseWorker() {
+    private void InitDataBaseWorker() throws IOException {
         String server = GlobalData.getInstance().DBName;
         String table = GlobalData.getInstance().DBTable;
         String login = GlobalData.getInstance().DBLogin;
         String password = GlobalData.getInstance().DBPassword;
-        _dataBaseWorker = new DataBaseWorker(server, table, login, password);
+        _dataBaseWorker = new JsonWorker();
     }
 
     private boolean CheckCode() {
