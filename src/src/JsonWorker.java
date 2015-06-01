@@ -6,25 +6,38 @@ import java.io.*;
 /**
  * Created by user on 04.05.2015.
  */
-public class JsonWorker implements IJsonWorker {
+public class JsonWorker implements IDataBaseWorker {
+
+    public JsonWorker() throws IOException {
+
+        File f = new File("GamesResults.json");
+
+        if(f.exists())
+        {
+            f.delete();
+        }
+
+        File F = new File("GamesResults.json");
+
+        RandomAccessFile file = new RandomAccessFile("GamesResults.json", "rw");
+
+        file.writeBytes("{\r\n[\r\n]\r\n}");
+
+        file.close();
+    }
 
     public void AddGameResult(String game, String firstPlayer, String firstPlayerLanguage, String secondPlayer, String secondPlayerLanguage, int gameResult, int sdkVer) throws IOException {
 
-        String fileName = firstPlayer + "VS" + secondPlayer + "result.txt";
-
-        File f = new File(fileName);
-
-        f.createNewFile();
 
         JSONObject res = makeResultNote(game, firstPlayer, firstPlayerLanguage, secondPlayer, secondPlayerLanguage, gameResult, sdkVer);
 
         String insertedInFile = res.toString();
 
-        RandomAccessFile file = new RandomAccessFile(fileName, "rw");
+        RandomAccessFile file = new RandomAccessFile("GamesResults.json", "rw");
 
-        file.skipBytes((int)file.length() - 1);
+        file.skipBytes((int)file.length() -4);
 
-        file.writeBytes("{\r\n" + insertedInFile + "\r\n" + "}");
+        file.writeBytes(insertedInFile + "\r\n" + "]\r\n}");
 
         file.close();
 
